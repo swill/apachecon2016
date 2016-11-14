@@ -3,6 +3,10 @@ source /opt/vyatta/etc/functions/script-template
 
 configure
 
+## manual steps to be able to scp config file
+#set service ssh port '22'
+#set interfaces ethernet eth0 address 'dhcp'
+
 set service ssh port '22'
 set system host-name 'acs-vyos-router'
 set system name-server '8.8.8.8'

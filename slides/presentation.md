@@ -6,7 +6,7 @@ Will Stevens
 VP @ Apache CloudStack  
 Lead Developer @ CloudOps  
 
-Follow Along: `github.com/swill/apachecon2016`
+[`github.com/swill/apachecon2016`](https://github.com/swill/apachecon2016)
 
 
 ---
