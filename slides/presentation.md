@@ -80,9 +80,9 @@ ___
 
 ## ACS Management Duties
 
-- Management interface for both Web and API.
+- Management entry point for both Web and API.
 - Orchestrates all the host compute resources.
-- Orchestrates the Public and Guest networks.
+- Orchestrates the Guest and Public networks.
 - Orchestrates VM storage (Root and Data).
 - Our Case: MySQL database for ACS.
 - Our Case: NFS mounts for storage.
@@ -119,7 +119,7 @@ ___
 
 - Provide compute resources to be orchestrated.
 - Hosts the System VMs (more on this later).
-- Guest network isolation and hosts the VRs.
+- Guest network isolation and hosts the Guest VRs.
 - Implements the snapshotting functionality.
 - Implements the VM recovery point feature.
 
@@ -154,7 +154,7 @@ ___
 
 ## Deploy Datacenter
 
-ACS and KVM are both ready to go now.
+ACS and KVM are both ready to go now, but not configured...
 
 - Setup Zone, Pod, Cluster and KVM Host.
 - Configure the orchestrated network ranges.
@@ -171,31 +171,15 @@ ___
 ## Functional Groupings
 
 - Region: A grouping of Zones.
-- Zone: Usually a data center.
+- Zone: Usually a single data center.
 	- Secondary Storage, Guest & Public IP Ranges
-- Pod: Usually a rack and can have multiple Clusters.
+- Pod: Usually a rack with one or more Clusters.
 	- Management Network, Cluster connectivity
-- Cluster: A group of hosts of the same hypervisor.
+- Cluster: A group of hosts of the same hypervisor type.
+	- Primary Storage
 - Host: The actual hypervisor host being orchestrated.
-	- VMware, XenServer, HyperV, KVM
+	- VMware, XenServer, KVM, HyperV
 
-___
-
-## Secondary Storage VM
-
-Handles everything related to templates and snapshots.
-
-- Transfer snapshots from Primary to Secondary storage.
-- Converting snapshots to templates to launch VMs.
-- Uploading and exposing templates to launch VMs.
-
-___
-
-## Console Proxy VM
-
-Exposes VM consoles through a web UI.
-
-<img src="./img/console_proxy.png" alt="console_proxy" width="700" />
 
 ---
 
@@ -214,9 +198,42 @@ ACS orchestrates the resources on the KVM Host.
 
 ___
 
-## Moving Pieces
+## More Details
 
-- ACS Mgmt is exposing an NFS mount for Primary Storage.
-- ACS Mgmt is exposing an NFS mount for Secondary Storage.
-- KVM is hosting a Console Proxy VM to expose VM consoles.
-- KVM is hosting the Secondary Storage VM for managing snapshots and templates.
+- ACS Mgmt is exposing Primary Storage over NFS.
+- ACS Mgmt is exposing Secondary Storage over NFS.
+- KVM hosts the guest VMs provisioned by ACS.
+- KVM hosts the Guest networks provisioned by ACS.
+- KVM hosts the System VMs (SSVM + Console VM).
+
+___
+
+## Secondary Storage VM (SSVM)
+
+Handles everything related to templates and snapshots.
+
+- Transfer snapshots from Primary to Secondary storage.
+- Converting snapshots to templates to launch VMs.
+- Uploading and exposing templates to launch guest VMs.
+
+___
+
+## Console Proxy VM
+
+Exposes VM consoles through a web UI.
+
+<img src="./img/console_proxy.png" alt="console_proxy" width="700" />
+
+
+---
+
+## Let's Go Explore...
+
+<a href="http://172.16.254.10:8080/client/" target="_blank"><code>172.16.254.10:8080/client</code></a>
+
+
+---
+
+## CloudStack Networking
+
+![advanced_networking](./img/advanced_networking.png)

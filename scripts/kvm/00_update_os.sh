@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+### I am cheating a little bit here.  I don't want people to have to wait for packages to install
+### during the demo, so I am pre-installing the packages that will be required here.
+### I have commented out these details in the actual code I will be running in the demo.
+
+# target a repo hosted on my mac (i don't trust conference wifi)
+echo "172.16.113.1    cloudstack.apt-get.eu" >> /etc/hosts
+systemctl restart network
+
 yum -y update
 yum -y upgrade
 
@@ -22,3 +30,7 @@ yum -y update
 # pre-install everything requiring the internet and without other dependancies for the demo
 echo "installing packages"
 yum -y install cloudstack-agent ntp vim
+
+# clean up the reference to the `172.16.113.0/24` network as it won't exist later.
+sed -i "/172.16.113.1/d" /etc/hosts
+systemctl restart network
