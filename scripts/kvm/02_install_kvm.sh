@@ -9,22 +9,23 @@ echo "172.16.254.10   acs.demo.lab" >> /etc/hosts
 echo "172.16.254.15   kvm.demo.lab" >> /etc/hosts
 systemctl restart network
 
-echo "setting up /etc/yum.repos.d/cloudstack.repo"
-# configure the yum repo for acs
-acs_repo="/etc/yum.repos.d/cloudstack.repo"
-touch $acs_repo
-echo "[cloudstack]" >> $acs_repo
-echo "name=cloudstack" >> $acs_repo
-echo "baseurl=http://cloudstack.apt-get.eu/centos/7/4.9/" >> $acs_repo
-echo "enabled=1" >> $acs_repo
-echo "gpgcheck=0" >> $acs_repo
-
-# prepare to use the new repo
-yum -y update
-
-echo "installing packages"
-# install the packages required by kvm
-yum -y install cloudstack-agent ntp vim
+### FOR THE DEMO I MOVED THIS TO `00_update_os.sh` BECAUSE NETWORK IS SLOW!!!
+## configure the yum repo for acs
+#echo "setting up /etc/yum.repos.d/cloudstack.repo"
+#acs_repo="/etc/yum.repos.d/cloudstack.repo"
+#touch $acs_repo
+#echo "[cloudstack]" >> $acs_repo
+#echo "name=cloudstack" >> $acs_repo
+#echo "baseurl=http://cloudstack.apt-get.eu/centos/7/4.9/" >> $acs_repo
+#echo "enabled=1" >> $acs_repo
+#echo "gpgcheck=0" >> $acs_repo
+#
+## prepare to use the new repo
+#yum -y update
+#
+#echo "installing packages"
+## install the packages required by kvm
+#yum -y install cloudstack-agent ntp vim
 
 echo "disabling selinux"
 # disable SELinux

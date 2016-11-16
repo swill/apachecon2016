@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
 
-echo "installing packages"
-# install marvin requirements
-yum -y install gcc libffi-devel nmap-ncat openssl-devel python-cffi python-devel python-pip
+### FOR THE DEMO I MOVED THIS TO `00_update_os.sh` BECAUSE NETWORK IS SLOW!!!
+## install marvin requirements
+#echo "installing packages"
+#yum -y install gcc libffi-devel nmap-ncat openssl-devel python-cffi python-devel python-pip
 
 # get and install marvin
 wget -P /tmp/ http://172.16.254.1/marvin/Marvin-4.9.0.tar.gz
 wget -P /tmp/ http://172.16.254.1/marvin/deployDataCenter.py
 pip install --upgrade /tmp/Marvin-*.tar.gz
 
-echo "updating database to push details required to script zone creation"
 # turn on the api authentication port
+echo "updating database to push details required to script zone creation"
 mysql -u cloud -ppassword cloud --exec "UPDATE cloud.configuration SET value='8096' where name='integration.api.port';"
 
 # setup the correct host for the acs server in global configs
@@ -30,8 +31,8 @@ while ! nc -w 2 172.16.254.10 8080 </dev/null; do
 done
 echo "cloudstack-management service is back..."
 
-echo "setting the datacenter in cloudstack"
 # deploy the zone using marvin
+echo "setting the datacenter in cloudstack"
 python /tmp/deployDataCenter.py -i demo.cfg
 
 # turn off the api authentication port

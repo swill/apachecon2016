@@ -1,8 +1,9 @@
 # Cloud: Zero to Sixty
 
-### Deploy your own cloud
+## Deploy a cloud in 40 mins
 
-Will Stevens  
+**Will Stevens&nbsp;&nbsp;<img src="./img/twitter.png" alt="@" style="border:0; width:30px; margin:0; background:none; box-shadow:none;" />&nbsp;&nbsp;@swillops**  
+
 VP @ Apache CloudStack  
 Lead Developer @ CloudOps  
 
@@ -11,7 +12,7 @@ Lead Developer @ CloudOps
 
 ---
 
-## Straight into the weeds
+## On The Menu
 
 We will be configuring an Apache CloudStack (ACS) cloud on my laptop using VMware Fusion.  
 
@@ -27,6 +28,15 @@ The ACS environment will be connected to my Mac's network through a VyOS router.
 ![vyos_network](./img/vyos_network.png)
 
 `./vyos/01_configure.sh`
+
+___
+
+## VyOS Duties
+
+- The network uplink for the entire environment.
+- Gateway for both Management and Public networks.
+- Edge firewall.  In this case just a pass through.
+- Firewall to protect the Management network.
 
 ___
 
@@ -59,14 +69,23 @@ ___
 
 ## ACS Management VM
 
-ACS Management node.  
-ACS MySQL database node.  
-NFS for Primary and Secondary storage.  
+ACS Management node, MySQL and NFS mounts.
 
 ![acs_network](./img/acs_network.png)
 
 `./acs/01_network_config.sh`
 `./acs/02_install_acs.sh`
+
+___
+
+## ACS Management Duties
+
+- Management interface for both Web and API.
+- Orchestrates all the host compute resources.
+- Orchestrates the Public and Guest networks.
+- Orchestrates VM storage (Root and Data).
+- Our Case: MySQL database for ACS.
+- Our Case: NFS mounts for storage.
 
 ___
 
@@ -93,6 +112,16 @@ KVM Hypervisor Host for ACS to orchestrate.
 
 `./kvm/01_network_config.sh`
 `./kvm/02_install_kvm.sh`
+
+___
+
+## KVM Duties
+
+- Provide compute resources to be orchestrated.
+- Hosts the System VMs (more on this later).
+- Guest network isolation and hosts the VRs.
+- Implements the snapshotting functionality.
+- Implements the VM recovery point feature.
 
 ___
 
@@ -123,17 +152,6 @@ ___
 
 ---
 
-## ACS & KVM
-
-ACS orchestrates the resources on the KVM Host.
-
-![acs_kvm](./img/acs_kvm.png)
-
-ACS Mgmt mimics a SAN for Primary and Secondary storage.
-
-
----
-
 ## Deploy Datacenter
 
 ACS and KVM are both ready to go now.
@@ -144,9 +162,61 @@ ACS and KVM are both ready to go now.
 
 `./acs/03_configure_zone.sh`
 
+___
+
+![architecture_overview](./img/architecture_overview.png)
+
+___
+
+## Functional Groupings
+
+- Region: A grouping of Zones.
+- Zone: Usually a data center.
+	- Secondary Storage, Guest & Public IP Ranges
+- Pod: Usually a rack and can have multiple Clusters.
+	- Management Network, Cluster connectivity
+- Cluster: A group of hosts of the same hypervisor.
+- Host: The actual hypervisor host being orchestrated.
+	- VMware, XenServer, HyperV, KVM
+
+___
+
+## Secondary Storage VM
+
+Handles everything related to templates and snapshots.
+
+- Transfer snapshots from Primary to Secondary storage.
+- Converting snapshots to templates to launch VMs.
+- Uploading and exposing templates to launch VMs.
+
+___
+
+## Console Proxy VM
+
+Exposes VM consoles through a web UI.
+
+<img src="./img/console_proxy.png" alt="console_proxy" width="700" />
 
 ---
 
-## Lets Review
+## Architecture Review
 
 ![network_architecture_tight](./img/network_architecture_tight.png)
+
+
+---
+
+## ACS & KVM
+
+ACS orchestrates the resources on the KVM Host.
+
+![acs_kvm](./img/acs_kvm.png)
+
+___
+
+## Moving Pieces
+
+- ACS Mgmt is exposing an NFS mount for Primary Storage.
+- ACS Mgmt is exposing an NFS mount for Secondary Storage.
+- KVM is hosting a Console Proxy VM to expose VM consoles.
+- KVM is hosting the Secondary Storage VM for managing snapshots and templates.
