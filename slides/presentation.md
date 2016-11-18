@@ -234,6 +234,37 @@ Exposes VM consoles through a web UI.
 
 ---
 
-## CloudStack Networking
+## CloudStack Advanced Networking
 
 ![advanced_networking](./img/advanced_networking.png)
+
+___
+
+## Isolated Guest Networks
+
+- Single tier network.
+- Network Features:
+	- Source Nat
+	- Static Nat
+	- Port Forwarding
+	- Load Balancing
+	- Firewall Rules (Ingress & Egress)
+	- DHCP & DNS
+	- Remote Access VPN
+
+___
+
+## VPC Networks
+
+- Multi-tier network.
+- Network Features:
+	- Source Nat
+	- Static Nat
+	- Port Forwarding
+	- Load Balancing
+	- Network ACLs (like Firewall Rules)
+	- DHCP & DNS
+	- Remote Access VPN
+	- Site-to-Site VPN
+	- Private Gateways (datacenter connect)
+		- Static Routes
